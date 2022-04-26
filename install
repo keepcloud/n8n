@@ -31,10 +31,9 @@ log_heading()
     printf '%*s' $length | tr ' ' '*'>>$logfile
     echo>>$logfile
     echo $1...
-
 }
 
-clear
+#clear
 
 # 1. Install dependencies
 log_heading "Installing dependencies"
