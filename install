@@ -6,8 +6,8 @@ fi
 
 logfile=/var/log/n8n-install.log
 
-if [[ ! -e /var/www/.npm ]]; then
-    mkdir -p /var/www/.npm
+if [[ ! -e /root/.npm ]]; then
+    mkdir -p /root/.npm
 fi
 
 # Deals with errors
@@ -34,20 +34,14 @@ log_heading()
 
 }
 
-# Runs commands with "sudo" if the user running the script is not root
-SUDO=''
-if [[ $EUID -ne 0 ]]; then
-    SUDO='sudo'
-fi
-
-#clear
+clear
 
 # 1. Install dependencies
 log_heading "Installing dependencies"
-$SUDO apt install build-essential python -y &>>$logfile || error_exit "$LINENO: Unable to install dependencies" 
+apt install build-essential python -y &>>$logfile || error_exit "$LINENO: Unable to install dependencies" 
     
 #Ajuste de permissões
-$SUDO chown -R 1000:33 "/var/www/.npm"
+#chown -R root:root "/root/.npm"
     
 # 2. Add NodeJS 14.x Source List
 log_heading "Add NodeJS 14.x Source List"
@@ -55,17 +49,17 @@ curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - &>>$logfile || e
 
 # 3. Install Node JS
 log_heading "Installing NodeJS 14.x"
-$SUDO apt install -y nodejs &>>$logfile || error_exit "$LINENO: Unable to install NodeJS"
+apt install -y nodejs &>>$logfile || error_exit "$LINENO: Unable to install NodeJS"
 
 log_heading "Install extra packages"
-npm install -g node-gyp
-npm install @fortawesome/fontawesome-svg-core@1.x
-npm install @fortawesome/free-solid-svg-icons@5.x
-npm install @fortawesome/vue-fontawesome
-npm install fsevents@2.3.2
-npm install -f
-npm install ssh2  
-npm config set user root install cpu-features
+npm install -g node-gyp &>>$logfile
+npm install @fortawesome/fontawesome-svg-core@1.x &>>$logfile
+npm install @fortawesome/free-solid-svg-icons@5.x &>>$logfile
+npm install @fortawesome/vue-fontawesome &>>$logfile
+npm install fsevents@2.3.2 &>>$logfile
+npm install -f &>>$logfile
+npm install ssh2 &>>$logfile
+npm config set user root install cpu-features &>>$logfile
 
 # 4. Install n8n
 log_heading "Installing n8n"
@@ -84,4 +78,5 @@ pm2 start n8n &>>$logfile || error_exit "$LINENO: Unable to start n8n using PM2"
 # Install Complete (The second URL that is used needs to display the hostname dynamically)
 IPADDR=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 message="The final phase of the installation has finished. You should be able to access the n8n WebUI from http://${IPADDR}:5678"
+log_heading "${message}"
 log_heading "Install Complete"
