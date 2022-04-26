@@ -40,7 +40,7 @@ if [[ $EUID -ne 0 ]]; then
     SUDO='sudo'
 fi
 
-clear
+#clear
 
 # 1. Install dependencies
 log_heading "Installing dependencies"
