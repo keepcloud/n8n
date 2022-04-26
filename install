@@ -1,25 +1,23 @@
 #!/bin/bash
 
-cd /var/www
-
-if [[ ! -e ~/n8n-install.log ]]; then
-    touch ~/n8n-install.log
+if [[ ! -e /var/log/n8n-install.log ]]; then
+    touch /var/log/n8n-install.log
 fi
 
-logfile=~/n8n-install.log
+logfile=/var/log/n8n-install.log
 
-if [[ ! -e /.npm ]]; then
-    mkdir -p /.npm
+if [[ ! -e /var/www/.npm ]]; then
+    mkdir -p /var/www/.npm
 fi
 
 # Deals with errors
 error_exit()
 {
-	echo "${1:-"Unknown Error"}" 1>&2
+    echo "${1:-"Unknown Error"}" 1>&2
     echo "Last 10 entried by this script:"
     tail $logfile
     echo "Full log details are recorded in $logfile"
-	exit 1
+    exit 1
 }
 
 # Create log headings
