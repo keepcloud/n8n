@@ -49,8 +49,16 @@ if (whiptail --backtitle "n8n Easy Installer" --title "Continue with install?" -
 
     # 1. Install dependencies
     log_heading "Installing dependencies"
+	
     #$SUDO apt update &>>$logfile || error_exit "$LINENO: Unable to update apt"
-    $SUDO apt install build-essential python -y &>>$logfile || error_exit "$LINENO: Unable to install dependencies" 
+    $SUDO apt install build-essential python -y &>>$logfile 
+		if [ $? -ne 0 ]; then
+			$SUDO apt install build-essential python3 -y &>>$logfile
+	 
+			if [ $? -ne 0 ]; then
+				error_exit "$LINENO: Não foi possível instalar as dependências."
+			fi
+		fi
     
     #Ajuste de permiss�es
     $SUDO chown -R 1000:33 "/var/www/.npm"
